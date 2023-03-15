@@ -1,12 +1,19 @@
+import ResponsiveAppBar from "@components/molecules/ResponsiveAppBar"
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Usuario from "@pages/usuario";
 
 function App() {
 
   return (
-    <div className="App">
-      <p className="read-the-docs">
-        MY APP
-      </p>
-    </div>
+    <Router>
+      <div className="App">
+        <ResponsiveAppBar />
+        <Routes>
+          <Route path='/' exact element={<Usuario/>} />  
+          <Route path='/usuario' exact element={<Usuario/>} />
+        </Routes>
+      </div>
+    </Router>
   )
 }
 
