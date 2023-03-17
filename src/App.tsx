@@ -1,7 +1,6 @@
-import ResponsiveAppBar from "@components/molecules/ResponsiveAppBar"
+import ResponsiveAppBar from "./components/molecules/ResponsiveAppBar"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Usuario from "@pages/usuario";
-
+import Usuario from './pages/usuario';
 function App() {
 
   return (
@@ -9,8 +8,8 @@ function App() {
       <div className="App">
         <ResponsiveAppBar />
         <Routes>
-          <Route path='/' exact element={<Usuario/>} />  
-          <Route path='/usuario' exact element={<Usuario/>} />
+          <Route path='/' element={<Usuario/>} />  
+          <Route path='/usuarios' element={<Usuario/>} />
         </Routes>
       </div>
     </Router>
