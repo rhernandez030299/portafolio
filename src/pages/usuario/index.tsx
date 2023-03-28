@@ -10,6 +10,9 @@ import Container from '@mui/material/Container';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import IUsuarios from 'src/interfaces/IUsuarios';
+import { Button } from '@mui/material';
+import BasicModal from '../../components/molecules/Usuarios/CrearUsuario/CrearUsuario';
+
 
 export default function Usuario() {
 
@@ -22,9 +25,11 @@ export default function Usuario() {
     };
     fetchData();
   }, [])
-
+  
   return (
     <Container maxWidth="lg" sx={{ mt: 5 }} >
+
+      <BasicModal />
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
