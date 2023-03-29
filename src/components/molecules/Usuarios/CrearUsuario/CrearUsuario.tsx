@@ -1,4 +1,5 @@
-import * as React from 'react';
+
+import React, { FC } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -8,8 +9,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { TextField } from '@mui/material';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 
-export default function BasicModal() {
+interface CrearUsuarioProps {
+  setLoad: any,
+  load: boolean
+}
+
+const CrearUsuario: FC<CrearUsuarioProps> = ({
+  setLoad,
+  load
+}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -52,12 +62,10 @@ export default function BasicModal() {
               .min(8, "La contraseña debe tener minimo 8 caracteres")
               .required('Required'),
           })}
-          onSubmit={(values, { setSubmitting }) => {
-            
-
-
-            
-            alert(JSON.stringify(values, null, 2)); 
+          onSubmit={async(values, { setSubmitting }) => {
+            const response = await axios.post('http://localhost:8080/api/usuarios', values);
+            setLoad(!load);
+            setOpen(false);
           }}
         >
           {({
@@ -170,3 +178,5 @@ export default function BasicModal() {
     </div>
   );
 }
+
+export default CrearUsuario;
