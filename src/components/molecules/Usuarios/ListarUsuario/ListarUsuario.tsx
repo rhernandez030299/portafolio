@@ -10,10 +10,19 @@ import Paper from '@mui/material/Paper';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import IUsuarios from 'src/interfaces/IUsuarios';
+import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function ListarUsuario({
-  load = false
-}) {
+interface ListarUsuarioProp {
+  load: boolean,
+  setDataEliminar: any
+}
+
+const ListarUsuario: React.FC<ListarUsuarioProp> = ({
+  load = false,
+  setDataEliminar,
+}) => {
 
   const [rows, setRows] = useState([]);
 
@@ -23,7 +32,11 @@ export default function ListarUsuario({
       setRows(response.data.users);
     };
     fetchData();
-  }, [load])
+  }, [load]);
+
+  const handleEliminar = async(idusuario: number) => {
+    setDataEliminar(idusuario);
+  }
 
   return (
     <TableContainer component={Paper}>
@@ -56,7 +69,12 @@ export default function ListarUsuario({
               </TableCell>
               <TableCell>{row.rol.nombre}</TableCell>
               <TableCell>
-                acciones
+                <IconButton color="primary" aria-label="Editar" component="label">
+                  <EditIcon />
+                </IconButton>
+                <IconButton color="primary" aria-label="Eliminar" component="label" onClick={ () => {handleEliminar(row.idusuario)}}>
+                  <DeleteIcon />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}
@@ -66,3 +84,5 @@ export default function ListarUsuario({
   )
 
 }
+
+export default ListarUsuario;
