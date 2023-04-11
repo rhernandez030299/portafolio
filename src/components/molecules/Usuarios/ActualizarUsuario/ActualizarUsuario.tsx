@@ -1,5 +1,5 @@
 
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -10,17 +10,21 @@ import { TextField } from '@mui/material';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import IUsuarios from '../../../../interfaces/IUsuarios';
 
-interface CrearUsuarioProps {
+interface ActualizarUsuarioProps {
   setLoad: any,
-  load: boolean
+  load: boolean,
+  dataModificar: number | string,
 }
 
-const CrearUsuario: FC<CrearUsuarioProps> = ({
+const ActualizarUsuario: FC<ActualizarUsuarioProps> = ({
   setLoad,
-  load
+  load,
+  dataModificar
 }) => {
   const [open, setOpen] = React.useState(false);
+  const [formData, setFormData] = React.useState({} as IUsuarios);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -30,11 +34,20 @@ const CrearUsuario: FC<CrearUsuarioProps> = ({
     setOpen(false);
   };
 
+  const consultarPorId = async(idusuario: number | string) => {
+    const response = await axios.get(`${import.meta.env.VITE_URL_SERVER}/api/usuarios/${idusuario}`);
+    setFormData(response.data.user as IUsuarios);
+  }
+
+  useEffect(() => {
+    if(dataModificar){
+      consultarPorId(dataModificar);
+    }
+    setOpen(dataModificar ? true : false)
+  }, [dataModificar])
+
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Crear usuario
-      </Button>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -42,12 +55,12 @@ const CrearUsuario: FC<CrearUsuarioProps> = ({
         aria-describedby="alert-dialog-description"
       >
         <Formik
+          enableReinitialize
           initialValues={{ 
-            nombre: '', 
-            email: '',
-            edad: '',
-            descripcion: '',
-            contrasenia: '',
+            nombre: formData.nombre || '', 
+            email: formData.email || '',
+            edad: formData.edad || '',
+            descripcion: formData.descripcion || '',
           }}
           validationSchema={ Yup.object({
             nombre: Yup.string()
@@ -58,12 +71,9 @@ const CrearUsuario: FC<CrearUsuarioProps> = ({
             descripcion: Yup.string()
               .required('Required'),
             email: Yup.string().email('Invalid email address').required('Required'),
-            contrasenia: Yup.string()
-              .min(8, "La contraseña debe tener minimo 8 caracteres")
-              .required('Required'),
           })}
           onSubmit={async(values, { setSubmitting }) => {
-            const response = await axios.post(`${import.meta.env.VITE_URL_SERVER}/api/usuarios`, values);
+            const response = await axios.put(`${import.meta.env.VITE_URL_SERVER}/api/usuarios/${dataModificar}`, values);
             setLoad(!load);
             setOpen(false);
           }}
@@ -80,7 +90,7 @@ const CrearUsuario: FC<CrearUsuarioProps> = ({
           }) => (
             <form onSubmit={handleSubmit}>
               <DialogTitle id="alert-dialog-title">
-                Crear un nuevo usuario
+                Actualizar un nuevo usuario
               </DialogTitle>
               <DialogContent>
                   
@@ -122,22 +132,6 @@ const CrearUsuario: FC<CrearUsuarioProps> = ({
                     }}
                     fullWidth
                     id="outlined-basic"
-                    label="Contraseña"
-                    name="contrasenia"
-                    variant="outlined"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.contrasenia}
-                    error={Boolean(errors.contrasenia)}
-                    helperText={errors.contrasenia}
-                  />
-
-                  <TextField 
-                    sx={{
-                      mt: 3
-                    }}
-                    fullWidth
-                    id="outlined-basic"
                     label="Edad"
                     name="edad"
                     type="number"
@@ -168,7 +162,7 @@ const CrearUsuario: FC<CrearUsuarioProps> = ({
               </DialogContent>
               <DialogActions>
                 <Button type="submit" >
-                  Crear 
+                  Actualizar 
                 </Button>
               </DialogActions>
             </form>
@@ -179,4 +173,4 @@ const CrearUsuario: FC<CrearUsuarioProps> = ({
   );
 }
 
-export default CrearUsuario;
+export default ActualizarUsuario;

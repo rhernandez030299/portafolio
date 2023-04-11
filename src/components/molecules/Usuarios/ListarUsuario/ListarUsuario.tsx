@@ -16,19 +16,21 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ListarUsuarioProp {
   load: boolean,
-  setDataEliminar: any
+  setDataEliminar: any,
+  setDataModificar: any,
 }
 
 const ListarUsuario: React.FC<ListarUsuarioProp> = ({
   load = false,
   setDataEliminar,
+  setDataModificar,
 }) => {
 
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get('http://localhost:8080/api/usuarios');
+      const response = await axios.get(`${import.meta.env.VITE_URL_SERVER}/api/usuarios`);
       setRows(response.data.users);
     };
     fetchData();
@@ -36,6 +38,10 @@ const ListarUsuario: React.FC<ListarUsuarioProp> = ({
 
   const handleEliminar = async(idusuario: number) => {
     setDataEliminar(idusuario);
+  }
+
+  const handleActualizar = (idusuario: number) => {
+    setDataModificar(idusuario)
   }
 
   return (
@@ -64,12 +70,12 @@ const ListarUsuario: React.FC<ListarUsuarioProp> = ({
               </TableCell>
               <TableCell>
                 {row.foto && 
-                  <img width={100} src={`http://localhost:8080/uploads/${row.foto}`} />
+                  <img width={100} src={`${import.meta.env.VITE_URL_SERVER}/uploads/${row.foto}`} />
                 }
               </TableCell>
               <TableCell>{row.rol.nombre}</TableCell>
               <TableCell>
-                <IconButton color="primary" aria-label="Editar" component="label">
+                <IconButton color="primary" aria-label="Editar" component="label" onClick={ () => {handleActualizar(row.idusuario)}} >
                   <EditIcon />
                 </IconButton>
                 <IconButton color="primary" aria-label="Eliminar" component="label" onClick={ () => {handleEliminar(row.idusuario)}}>

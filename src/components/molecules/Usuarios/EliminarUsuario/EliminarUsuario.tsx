@@ -29,7 +29,7 @@ const EliminarUsuario: FC<EliminarUsuarioProps> = ({
   };
 
   const handleEliminar = async() => {
-    const response =  await axios.delete(`http://localhost:8080/api/usuarios/${dataEliminar}`);
+    const response =  await axios.delete(`${import.meta.env.VITE_URL_SERVER}/api/usuarios${dataEliminar}`);
     setLoad( ! load);
     setOpen(false);
 
