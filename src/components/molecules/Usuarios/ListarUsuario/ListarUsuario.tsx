@@ -13,6 +13,7 @@ import IUsuarios from 'src/interfaces/IUsuarios';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Cookies from 'js-cookie';
 
 interface ListarUsuarioProp {
   load: boolean,
@@ -30,7 +31,11 @@ const ListarUsuario: React.FC<ListarUsuarioProp> = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(`${import.meta.env.VITE_URL_SERVER}/api/usuarios`);
+      const response = await axios.get(`${import.meta.env.VITE_URL_SERVER}/api/usuarios`, {
+        headers: {
+          'x-token': Cookies.get('token')
+        }
+      });
       setRows(response.data.users);
     };
     fetchData();
